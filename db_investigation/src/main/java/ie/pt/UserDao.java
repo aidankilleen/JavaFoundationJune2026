@@ -6,17 +6,51 @@ import java.util.List;
 
 public class UserDao {
 
-    private String fileName = "C:\\work\\training\\java\\users_production.db";
+    private static String defaultFileName = "C:\\work\\training\\java\\users_production.db";
     private Connection conn;
 
     public UserDao() {
 
+        // call the other constructor
+        // with the defaultFileName
+        this(defaultFileName);
+    }
+    public UserDao(String fileName) {
         String connectionString = "jdbc:sqlite:" + fileName;
         try {
             conn = DriverManager.getConnection(connectionString);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void createDatabase() {
+        try {
+            Statement stmt = conn.createStatement();
+
+            stmt.executeUpdate("DROP TABLE IF EXISTS users");
+
+            stmt.executeUpdate("""
+                CREATE TABLE users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name TEXT NOT NULL,
+                        email TEXT NOT NULL,
+                        active INTEGER NOT NULL
+                       )
+                """);
+            stmt.executeUpdate("""
+                INSERT INTO users
+                (name, email, active)
+                VALUES('Zoe', 'zoe@gmail.com', 1), 
+                    ('Yvonne', 'yvonne@gmail.com', 0), 
+                    ('Wendy', 'wendy@gmail.com', 1), 
+                    ('Xavier', 'xav@gmail.com', 0), 
+                    ('Veronica', 'v@gmail.com', 1); 
+                """);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public List<User> getUsers() {
@@ -110,17 +144,31 @@ public class UserDao {
 
     public User updateUser(User u) {
 
+        /*
         String sql = "UPDATE users " +
                 "SET " +
                 "name = '" + u.getName() + "', " +
                 "email = '"+ u.getEmail() + "'," +
                 "active = " + (u.isActive() ? 1 : 0) +
                 " WHERE id = " + u.getId();
+        */
 
-        System.out.println(sql);
+        String sql = """
+                        UPDATE users 
+                        SET name = ?,
+                        email = ?,
+                        active = ?
+                        WHERE id = ?""";
+
+        //System.out.println(sql);
         try {
-            Statement stmt = conn.createStatement();
-            int n = stmt.executeUpdate(sql);
+            //Statement stmt = conn.createStatement();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, u.getName());
+            stmt.setString(2, u.getEmail());
+            stmt.setBoolean(3, u.isActive());
+            stmt.setInt(4, u.getId());
+            int n = stmt.executeUpdate();
             if (n == 0) {
                 // no records updated
                 // TODO - is this an error
@@ -151,7 +199,7 @@ public class UserDao {
                 INSERT INTO users
                 (Name, Email, Active)
                 VALUES(?, ?, ?)""";
-        System.out.println(sql);
+        // System.out.println(sql);
 
         try {
             //Statement stmt = conn.createStatement();

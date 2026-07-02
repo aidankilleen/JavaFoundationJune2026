@@ -15,7 +15,7 @@ public class AppTest {
         int a = 10;
         int b = 20;
 
-        assertEquals(a + b, 31);
+        assertEquals(a + b, 30);
 
     }
 }
