@@ -4,17 +4,34 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UserDao
+ * This is a class for reading and writing to the users table in the db
+ *  Note: make sure to call .close() when finished with the database
+ * @author Aidan Killeen
+ * @version 1.0
+ */
 public class UserDao {
 
     private static String defaultFileName = "C:\\work\\training\\java\\users_production.db";
     private Connection conn;
 
+    /**
+     * create the dao object using the default filename
+     *
+     */
     public UserDao() {
 
         // call the other constructor
         // with the defaultFileName
         this(defaultFileName);
     }
+
+    /**
+     *
+     * @param fileName the filename for the database.
+     *                 note: file will be created if it doesn't exist
+     */
     public UserDao(String fileName) {
         String connectionString = "jdbc:sqlite:" + fileName;
         try {

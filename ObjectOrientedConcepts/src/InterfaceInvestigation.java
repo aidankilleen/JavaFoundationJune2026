@@ -14,6 +14,9 @@ public class InterfaceInvestigation {
 
         t.display();
         t.getIdCard();
+        t.startLesson();
+
+
 
         t.teach();
 
@@ -42,7 +45,9 @@ public class InterfaceInvestigation {
         teachers.add(new Trainer("Carol", "Conway", "E54321"));
         teachers.add(new Tutor("Dan", "Dunne", "Computer Futures"));
 
+        System.out.println("-------------------------------");
         for(Teacher tchr : teachers) {
+            tchr.startLesson();
             tchr.teach();
         }
 

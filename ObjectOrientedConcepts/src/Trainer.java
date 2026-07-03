@@ -11,4 +11,9 @@ public class Trainer extends Employee
     public void teach() {
         System.out.println("Listen up, class is starting");
     }
+
+    @Override
+    public void startLesson() {
+        System.out.println("Trainer is starting the lesson");
+    }
 }
